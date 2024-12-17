@@ -1,0 +1,158 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <map>
+#include <limits>
+#include <tuple>
+
+using namespace std;
+
+struct Fraction {
+    int num;
+    int den;
+};
+
+vector<int> divs(int&);
+void is_supreme(int&);
+int nod(int, int);
+int nok(int&, int&);
+void is_prime(int&);
+void kind_of_numbers(map<pair <int, int>, pair <int, int>>&);
+void calculator_of_fractions();
+void output(map<pair <int, int>, pair <int, int>>&);
+
+
+int main() {
+    char press;
+    map<pair <int, int>, pair <int, int>> cache_nod_nok; //вектор кэшированных значений нод и нок пар чисел
+    map<tuple <Fraction, Fraction, char>, Fraction> cache_op_fractions; //вектор кэшированных значений операций с дробями, не реализовано
+    while (press!= 'n'){
+        output(cache_nod_nok);
+        cout << "Хотите продолжить? [y/n] ";
+        cin >> press;
+    }
+    
+}
+
+
+vector<int> divs(int& n) {
+    vector<int> divs;
+    for (int i = 1; i <= (sqrt(n)); i++) {
+        if (n % i == 0) {
+            divs.push_back(i);
+            if (i * i != n)
+                divs.push_back(n / i);
+        }
+    }
+    return divs;
+}
+
+void is_prime(int& number) {
+    if (divs(number).size() == 2) cout << "Число " << number << " простое\n";
+    else cout << "Число " << number << " НЕ простое\n";
+}
+
+void is_supreme(int& n) {
+    vector<int> divisors = divs(n);
+    int sum = 0;
+    for (int i = 0; i < divisors.size() ; ++i) {
+        if (divisors[i] != n)
+          sum += divisors[i];
+    }
+    if (sum == n)
+        cout << "Число " << n << " совершенное\n";
+    else
+        cout << "Число " << n << " НЕ совершенное\n";
+}
+
+int nod(int n1, int n2) {
+    while (n2 != 0) {
+        int temp = n2;
+        n2 = n1 % n2;
+        n1 = temp;
+    }
+    return n1;
+}
+int nok(int& n1, int& n2){
+    int result = (n1 / nod(n1, n2)) * n2;
+    return result;
+}
+void kind_of_numbers(map<pair <int, int>, pair <int, int>>& cache_nod_nok) {
+    pair<int, int> analysis;
+    cout << "===== Функция анализатора\n"
+         << "Введите два числа: ";
+    cin >> analysis.first >> analysis.second;
+    is_prime(analysis.first);
+    is_prime(analysis.second);
+    is_supreme(analysis.first);
+    is_supreme(analysis.second);
+    if (cache_nod_nok.find(analysis)==cache_nod_nok.end()){
+        cache_nod_nok[analysis].first = nod(analysis.first, analysis.second);
+        cache_nod_nok[analysis].second = nok(analysis.first, analysis.second);
+    }
+    cout << "Наибольший общий делитель => " << cache_nod_nok[analysis].first << "\n";
+    cout << "Наименьшее общее кратное => " << cache_nod_nok[analysis].second << "\n";
+
+}
+
+void calculator_of_fractions(){
+    Fraction f1, f2, f3;
+    char op;
+    int flag = 0;
+    cout << "===== Функция калькулятора\n"
+         << "Первая дробь: ";
+    cin >> f1.num >> f1.den;
+    cout << "Вторая дробь: ";
+    cin >> f2.num >> f2.den;
+    while (cin.fail() || (f1.den == 0) || (f2.den == 0)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Знаменатель не может быть равен 0\nВведите значения еще раз\n"
+             << "Первая дробь: ";
+        cin >> f1.num >> f1.den;
+        cout << "Вторая дробь: ";
+        cin >> f2.num >> f2.den;
+    }
+    cout << "Введите знак: ";
+    cin >> op;
+    f3.den = nod(f1.den, f2.den);
+    f3.den = (f1.den*f2.den) / f3.den;
+    switch (op){
+        case '-':
+            f3.num = (f1.num)*(f3.den/f1.den) - (f2.num)*(f3.den/f2.den);
+            flag = 1;
+            break;
+        case '+':
+            f3.num = (f1.num)*(f3.den/f1.den) + (f2.num)*(f3.den/f2.den);
+            flag = 1;
+            break;
+        default:
+            cout << "В калькуляторе нет такой операции";
+    }
+    if (flag == 1){
+        int common_factor = nod(f3.num,f3.den);
+        f3.den /= common_factor;
+        f3.num /= common_factor;
+        cout << f3.num << "/" << f3.den << "\n";
+    }
+}
+
+void output(map<pair <int, int>, pair <int, int>>& cache_nod_nok){
+    int choice;
+    
+    cout << "\nВыберите действие:\n"
+         << "1. какое число\n"
+         << "2. дроби\n"
+         << "Введите номер действия: ";
+    cin >> choice;
+    switch (choice) {
+        case 1: 
+            return kind_of_numbers(cache_nod_nok);
+            break;
+        case 2: 
+            return calculator_of_fractions();
+            break;
+        default: cout << "Нет такого действия";
+    }
+}
