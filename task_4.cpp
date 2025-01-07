@@ -9,7 +9,9 @@ std::vector<std::string> Split(const std::string& str, char delimiter);
 #include <iostream>
 #include <vector>
 #include <string>
+
 //в программах использую в основном size_t потому что яндекс придирается к int
+
 using namespace std;
 // Функция для разделения строки по разделителю
 vector<string> Split(const string& str, char delimiter) {
