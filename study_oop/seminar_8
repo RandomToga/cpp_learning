@@ -1,0 +1,60 @@
+/*Задание. Разработать класс описания точки в трехмерном пространстве с использованием множественного наследования
+Для этого:
+1.	Разработать класс Point2D для хранения координат точки на плоскости с информационными членами x и y типа int 
+и конструктором с параметрами для задания координат (можно использовать список инициализации).
+2.	Разработать класс Z с информационным членом z (тип int) и конструктором с параметром для задания значения 
+информационного члена z.
+Разработать класс Point3D наследующий классы Point2D и Z, определить конструктор для задания трех координат 
+точки и метод для вывода информации о трех координатах точки.
+Написать программу, использующую класс Point3D, в программе создать несколько объектов, задать координаты 
+и вывести информацию об этих объектах (координаты).
+*/
+#include <iostream>
+#include <clocale>
+
+using namespace std;
+
+class Point2D {
+protected:
+	int X, Y;
+public:
+	Point2D(int xx, int yy) : X(xx), Y(yy) {
+	}
+	void display2D() const {
+		cout << "X = " << X << " Y = " << Y;
+	}
+};
+
+class Z {
+protected:
+	int z;
+public:
+	Z(int zz) : z(zz) {
+	}
+	void displayZ() const {
+		cout << " Z = " << z << "\n";
+	}
+};
+
+class Point3D : public Point2D, public Z {
+public:
+	Point3D(int xx, int yy, int zz) : Point2D(xx, yy), Z(zz) {
+	}
+	void display3D() const {
+		display2D();
+		displayZ();
+	}
+};
+
+int main() {
+	setlocale(LC_ALL, "ru");
+	Point3D point1(1, 2, 3);
+	Point3D point2(3, 2, 1);
+	Point3D point3(6, 5, 4);
+	cout << "Первая точка: ";
+	point1.display3D();
+	cout << "Вторая точка: ";
+	point2.display3D();
+	cout << "Третья точка: ";
+	point3.display3D();
+}
