@@ -1,0 +1,78 @@
+/*Задание. На основе задания предыдущего семинара разработать класс описания трехмерной точки в однородных координатах
+Для этого дополнительно:
+1.	Разработать класс H с информационным членом h (тип double) и конструктором с параметром для задания значения 
+информационного члена h.
+Разработать класс Point3Dh наследующий классы Point2D, Z и H, определить конструктор для задания четырех координат
+точки (обязательна проверка на 0 четвертой координаты) и метод для вывода информации о трех координатах точки с учетом 
+четвертого параметра.
+x*=x/h и y*=y/h. Аналогично для координаты z.
+Написать программу, использующую класс Point3Dh, в программе создать несколько объектов, задать однородные 
+координаты и вывести информацию об этих объектах (реальные координаты).
+*/
+#include <iostream>
+#include <clocale>
+
+using namespace std;
+
+class Point2D {
+protected:
+	int x, y;
+public:
+	Point2D(int x, int y) : x(x), y(y) {
+	}
+	void display2D() const {
+		cout << "X = " << x << " Y = " << y;
+	}
+};
+
+class Z {
+protected:
+	int z;
+public:
+	Z(int z) : z(z) {}
+	void displayZ() const {
+		cout << " Z = " << z << "\n";
+	}
+};
+
+class H {
+protected:
+	double h;
+public:
+	H(double h) : h(h) {
+		if (h == 0) {
+			throw invalid_argument("Четвертая координата (h) не может быть равна 0");
+		}
+	}
+	void displayH() const {
+		cout << "H = " << h << endl;
+	}
+};
+
+class Point3Dh : public Point2D, public Z, public H {
+public:
+	Point3Dh(int x, int y, int z, double h) : Point2D(x, y), Z(z), H(h) {
+	}
+	void displayOdnorodCoords() const {
+		cout << "Однородные координаты: " << endl;
+		cout << x << ", " << y << ", " << z << ", " << h << endl;
+	}
+	void displayRealCoords() const {
+		cout << "Реальные координаты: " << endl;
+		cout << x / h << ", " << y / h << ", " << z / h << endl;
+	}
+};
+
+int main() {
+	setlocale(LC_ALL, "ru");
+	Point3Dh point1(1, 2, 3, 1);
+	Point3Dh point2(3, 2, 1, 3);
+	cout << ">>>>>Первая точка<<<<<\n";
+	point1.displayRealCoords();
+	point1.displayOdnorodCoords();
+	cout << "\n";
+
+	cout << ">>>>>Вторая точка<<<<<\n";
+	point2.displayRealCoords();
+	point2.displayOdnorodCoords();
+}
