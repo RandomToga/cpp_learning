@@ -1,7 +1,10 @@
+
 #include "HeaderBook.h"
 #include <iostream>
 #include <vector>
 #include <clocale>
+#include <Windows.h>
+
 using namespace std;
 void displayMenu() {
     cout << "\nКаталог библиотеки\n";
@@ -18,15 +21,17 @@ void displayMenu() {
 
 int main() {
     setlocale(LC_ALL, "Russian");
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
     vector<CatalogBook> catalog;
-    int choice = 0;
+    char choice = 0;
 
-    while (choice != 8) {
+    while (choice != '8') {
         displayMenu();
         cin >> choice;
 
         switch (choice) {
-        case 1: {
+        case '1': {
             string title, publisher;
             vector<string> authors;
             unsigned int year, pages, id, quantity;
@@ -66,14 +71,14 @@ int main() {
             newBook.addToCatalog(catalog);
             break;
         }
-        case 2: {
+        case '2': {
             unsigned int id;
             cout << "Введите ID книги для удаления: ";
             cin >> id;
             CatalogBook::removeFromCatalog(catalog, id);
             break;
         }
-        case 3: {
+        case '3': {
             unsigned int id;
             cout << "Введите ID книги для просмотра: ";
             cin >> id;
@@ -88,7 +93,7 @@ int main() {
             }
             break;
         }
-        case 4: {
+        case '4': {
             string searchTerm;
             cout << "Введите название или автора книги: ";
             cin.ignore();
@@ -96,7 +101,7 @@ int main() {
             CatalogBook::searchInCatalog(catalog, searchTerm);
             break;
         }
-        case 5: {
+        case '5': {
             unsigned int id;
             string readerName;
             cout << "Введите ID книги: ";
@@ -116,7 +121,7 @@ int main() {
             }
             break;
         }
-        case 6: {
+        case '6': {
             unsigned int id;
             string readerName;
             cout << "Введите ID книги: ";
@@ -136,11 +141,11 @@ int main() {
             }
             break;
         }
-        case 7: {
+        case '7': {
             CatalogBook::printOverdueReaders(catalog);
             break;
         }
-        case 8: {
+        case '8': {
             break;
         }
         default: {
@@ -148,7 +153,7 @@ int main() {
             break;
         }
         }
-    } 
+    }
 
     return 0;
 }
