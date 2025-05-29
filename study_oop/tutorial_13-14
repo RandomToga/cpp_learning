@@ -1,0 +1,47 @@
+//19. К каждому элементу добавить среднее арифметическое положительных элементов контейнера.
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+int main() {
+    setlocale(LC_ALL, "ru");
+    vector<int> numbers = { -5, 10, -3, 8, -1, 4, 0, -7, 2 };
+    cout << "Изначальный контейнер: ";
+    for_each(numbers.begin(), numbers.end(), [](int num) { //вывод изначального массива через for_each
+        cout << num << " ";
+        });
+    cout << endl;
+    int sum_positives = 0;
+    size_t count_positives = 0;
+
+    for_each(numbers.begin(), numbers.end(), [&](int num) { //в квадратных скобках инструкция что надо брать ссылки
+    //на переменные sum_positives, count_positives
+        if (num > 0) {
+            sum_positives += num;
+            count_positives++;
+        }
+        }); //заменила цикл for на алгоритм for_each (я считаю бесполезный мув, писать дольше только)
+    /*for_each(начало, конец, [](тип_элемента элемент) {
+        // что-то сделать с элементом
+    });*/
+    double sr_arif = (count_positives > 0) ? static_cast<double>(sum_positives) / count_positives : 0.0;
+
+    // Добавляем среднее к каждому элементу
+    transform(numbers.begin(), numbers.end(), numbers.begin(), [=](int num) {
+        return num + sr_arif;
+        });
+    /*transform(начало_источника, конец_источника, начало_приёмника, [](тип_элемента элемент) {
+        return результат_преобразования;
+    });
+    [] – ничего не брать.
+    [=] – взять копии всех вещей.
+    [&] – взять ссылки на вещи (может их портить!)*/
+    cout << "Среднее арифметическое положительных элементов: " << sr_arif << endl;
+    cout << "Результирующий контейнер: ";
+    for_each(numbers.begin(), numbers.end(), [](int num) { //вывод тоже через for_each
+        cout << num << " ";
+        });
+}
