@@ -1,0 +1,99 @@
+#include <iostream>
+
+using namespace std;
+class TimeInterval {
+private:
+    int hours;   // 0–23
+    int minutes; // 0–59
+    int seconds; // 0–59
+
+    // Нормализация значений в диапазон 0:0:0 – 23:59:59
+    void normalize() {
+        int totalSeconds = (hours * 3600 + minutes * 60 + seconds) % (24 * 3600); //22 ч 70 мин 90 сек = 22*3600 + 70*60 + 90 = 82290
+        hours = totalSeconds / 3600;
+        minutes = (totalSeconds % 3600) / 60;
+        seconds = totalSeconds % 60;
+    }
+
+public:
+    // Конструктор
+    TimeInterval(int h = 0, int m = 0, int s = 0) : hours(h), minutes(m), seconds(s) {
+        normalize();
+    }
+
+    // Оператор +
+    TimeInterval operator+(const TimeInterval& other) const {
+        return TimeInterval(hours + other.hours, minutes + other.minutes, seconds + other.seconds);
+    }
+
+    // Оператор +=
+    TimeInterval& operator+=(const TimeInterval& other) {
+        hours += other.hours;
+        minutes += other.minutes;
+        seconds += other.seconds;
+        normalize();
+        return *this;
+    }
+
+    // Оператор -
+    /*Тип возвращаемого значения: TimeInterval
+    Что делает: Создаёт и возвращает новый объект, результат вычитания.*/
+    TimeInterval operator-(const TimeInterval& other) const {
+        return TimeInterval(hours - other.hours, minutes - other.minutes, seconds - other.seconds);
+    }
+
+    // Оператор -=
+    /*Тип возвращаемого значения: TimeInterval& (ссылка на сам объект)
+    Что делает: Модифицирует текущий объект: вычитает other из this.*/
+    TimeInterval& operator-=(const TimeInterval& other) {
+        hours -= other.hours;
+        minutes -= other.minutes;
+        seconds -= other.seconds;
+        normalize();
+        return *this;
+    }
+
+    // Оператор ! — проверка на ноль
+    bool operator!() const {
+        return hours == 0 && minutes == 0 && seconds == 0;
+    }
+
+    // Оператор ==
+    bool operator==(const TimeInterval& other) const {
+        return hours == other.hours && minutes == other.minutes && seconds == other.seconds;
+    }
+
+    // Оператор !=
+    bool operator!=(const TimeInterval& other) const {
+        return !(*this == other);
+    }
+
+    // Преобразование в секунды
+	operator long() const { //static_cast<long> - смена типа
+        return static_cast<long>(hours) * 3600 + minutes * 60 + seconds;
+    }
+
+    // Вывод времени
+    void print() const {
+        cout << hours << ":" << minutes << ":" << seconds;
+    }
+};
+int main() {
+    setlocale(LC_ALL, "Russian");
+    TimeInterval t1(22, 30, 24);
+    TimeInterval t2(0, 15, 36);
+
+    TimeInterval sum = t1 + t2;
+    TimeInterval diff = t1 - t2;
+
+    cout << "Время 1: "; t1.print(); cout << endl;
+    cout << "Время 2: "; t2.print(); cout << endl;
+    cout << "Их сумма: "; sum.print(); cout << endl;
+    cout << "Их разность: "; diff.print(); cout << endl;
+
+    cout << "Время одинаково? " << (t1 == t2 ? "Время одинаково" : "Время разное") << endl;
+    cout << "Проверка на ноль времени 1: " << (!t1 ? "Ноль" : "Не ноль") << endl;
+    cout << "Время 1 в секундах: " << static_cast<long>(t1) << " секунд" << endl;
+
+    return 0;
+}
